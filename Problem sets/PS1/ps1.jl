@@ -7,13 +7,7 @@ using SparseArrays, PyPlot, Polynomials
 
 using SparseArrays, Plots
 
-"""
-    A, b, x, y = assemblePoisson(n, f, g)
 
-Assemble linear system Au = b for Poisson's equation using finite differences.
-Grid size (n+1) x (n+1), right hand side function f(x,y), Dirichlet boundary
-conditions g(x,y).
-"""
 function assemblePoisson(n, f, g)
     h = 1.0 / n
     N = (n+1)^2
@@ -90,7 +84,7 @@ function problem1b(ns)
 end
 
 ns = [300, 200, 150, 100, 50, 20, 10]
-problem1b(ns)
+#problem1b(ns)
 
 
 
