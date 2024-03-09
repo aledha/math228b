@@ -217,9 +217,11 @@ function pmesh(pv, hmax, nref, savesolutions = false)
     for i = 1:N
         segmentlength = sqrt((pv[i,1] - pv[i+1,1])^2 + (pv[i,2] - pv[i+1,2])^2)
         numnodes = trunc(Int32, ceil(segmentlength/hmax))
-        extranodes = [LinRange(pv[i,1], pv[i+1,1], numnodes), LinRange(pv[i,2], pv[i+1,2], numnodes)]
-        extranodes = [extranodes[1][begin+1:end-1] extranodes[2][begin+1:end-1]]
-        p = vcat(p, extranodes)
+        if numnodes > 2
+            extranodes = [LinRange(pv[i,1], pv[i+1,1], numnodes), LinRange(pv[i,2], pv[i+1,2], numnodes)]
+            extranodes = [extranodes[1][begin+1:end-1] extranodes[2][begin+1:end-1]]
+            p = vcat(p, extranodes)
+        end
     end
     
     # c)
