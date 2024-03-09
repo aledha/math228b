@@ -212,7 +212,7 @@ end
 
 function pmesh(pv, hmax, nref, savesolutions = false)
     N = size(pv, 1) - 1
-    p = pv
+    p = pv[1:end-1,:]
     # b) Adding nodes along each segment
     for i = 1:N
         segmentlength = sqrt((pv[i,1] - pv[i+1,1])^2 + (pv[i,2] - pv[i+1,2])^2)
