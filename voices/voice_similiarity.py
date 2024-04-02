@@ -18,4 +18,15 @@ def compareVoice(path1, path2):
 
 np.set_printoptions(precision=3, suppress=True)
 
-print(compareVoice("./alex1.mp3", "./alex2.mp3"))
+
+
+samples1 = ["lex sample.mp3", "lexIVC sample.mp3", "lexPVC sample.mp3"]
+samples2 = ["lex sample 2.mp3", "lexIVC sample 2.mp3", "lexPVC sample 2.mp3"]
+samples = [samples1, samples2]
+
+print("Comparing Lex's voice samples")
+
+print(f"Similarity for IVC for sample 1: {compareVoice(samples1[0], 'alex1.mp3')}")
+print(f"Similarity for IVC for sample 2: {compareVoice(samples2[0], samples1[1])}")
+print(f"Similarity for PVC for sample 1: {compareVoice(samples1[0], samples2[2])}")
+print(f"Similarity for PVC for sample 2: {compareVoice(samples2[0], samples1[2])}")
