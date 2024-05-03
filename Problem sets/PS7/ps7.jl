@@ -115,9 +115,6 @@ function dgconvect(; n=10, p=1, T=1.0, dt=1e-3)
         end
     end
 
-    #uexact = @. uinit(mod(x - T, 1.0))  # Exact final solution
-    #error = maximum(abs.(u - uexact))   # Discrete inf-norm error""
-
     gu = gphi*u                             # Numerical solution evaluated at Gaussian nodes in each element
     gxx = @. h/2*(gx+1) + (0:h:1-h)'        # Gaussian nodes in each element
     guexact = @. uinit(mod(gxx - T, 1.0))   # Exact final solution evaluated at Gaussian nodes in each element
@@ -138,6 +135,7 @@ function dgconvect_convergence()
     errors = zeros(5,5)
     slopes = zeros(5)
     nps = zeros(5,5)
+    throwaway = [0 0 0 1 2]
     
     convplot = plot(legend=true, xlabel="np", ylabel="error")
     for i = 1:5
@@ -148,22 +146,18 @@ function dgconvect_convergence()
             errors[i,j] = error
             nps[i,j] = n*p
         end
-        if i < 5
-            fit = Polynomials.fit(log.(nps[i,:]), log.(errors[i,:]),1)
-            slopes[i] = coeffs(fit)[2]
-            plot!(nps[i,:], errors[i,:], xaxis=:log, yaxis=:log, labels="p=$(ps[i]), slope = $(round(slopes[i], digits=2))")
-        else
-            # Throw away last point due to rounding errors
-            fit = Polynomials.fit(log.(nps[5,begin+1:end-2]), log.(errors[5,begin+1:end-2]), 1)
-            slopes[5] = coeffs(fit)[2]
-            plot!(nps[5,begin:end], errors[5,begin:end], xaxis=:log, yaxis=:log, labels="p=$(ps[5]), slope = $(round(slopes[5], digits=2))")
-        end
+        fit = Polynomials.fit(log.(nps[i,begin+1:end-throwaway[i]]), log.(errors[i,begin+1:end-throwaway[i]]),1)
+        slopes[i] = coeffs(fit)[2]
+
+        plot!(nps[i,:], errors[i,:], xaxis=:log, yaxis=:log, labels="p=$(ps[i]), slope = $(round(slopes[i], digits=2))")
     end
   
     display(convplot)
 
     return errors, slopes
 end
+
+#errors, slopes = dgconvect_convergence()
 
 function dgconvdiff(; n=10, p=1, T=1.0, dt=1e-3,k=1e-3)
 
@@ -259,6 +253,7 @@ function dgconvdiff_convergence()
     errors = zeros(5,5)
     slopes = zeros(5)
     nps = zeros(5,5)
+    throwaway = [0 0 0 1 2]
     
     convplot = plot(legend=true, xlabel="np", ylabel="error")
     for i = 1:5
@@ -269,16 +264,10 @@ function dgconvdiff_convergence()
             errors[i,j] = error
             nps[i,j] = n*p
         end
-        if i < 5
-            fit = Polynomials.fit(log.(nps[i,:]), log.(errors[i,:]),1)
-            slopes[i] = coeffs(fit)[2]
-            plot!(nps[i,:], errors[i,:], xaxis=:log, yaxis=:log, labels="p=$(ps[i]), slope = $(round(slopes[i], digits=2))")
-        else
-            # Throw away last points due to rounding errors
-            fit = Polynomials.fit(log.(nps[5,begin+1:end-2]), log.(errors[5,begin+1:end-2]), 1)
-            slopes[5] = coeffs(fit)[2]
-            plot!(nps[5,begin:end], errors[5,begin:end], xaxis=:log, yaxis=:log, labels="p=$(ps[5]), slope = $(round(slopes[5], digits=2))")
-        end
+        fit = Polynomials.fit(log.(nps[i,begin+1:end-throwaway[i]]), log.(errors[i,begin+1:end-throwaway[i]]),1)
+        slopes[i] = coeffs(fit)[2]
+
+        plot!(nps[i,:], errors[i,:], xaxis=:log, yaxis=:log, labels="p=$(ps[i]), slope = $(round(slopes[i], digits=2))")
     end
   
     display(convplot)
@@ -286,4 +275,4 @@ function dgconvdiff_convergence()
     return errors, slopes 
 end
 
-#errors, slopes = dgconvdiff_convergence()
+errors, slopes = dgconvdiff_convergence()
